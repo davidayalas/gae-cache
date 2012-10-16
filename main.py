@@ -6,7 +6,7 @@ from lib.gae_cache import cache
 
 class MainHandler(webapp.RequestHandler):
 	def get(self):
-		url = "http://loripsum.net/api/9000/short/headers"; #1.5MB aprox request html		
+		url = "http://loripsum.net/api/9000/short/headers"; #1.5MB aprox request html, gae_cache.cache will split it in 2 blocks
 		c = cache.get("content") 
 
 		if c is None:

@@ -169,6 +169,8 @@ class cache:
 		if data is None:
 			return
 
+		data = str(data);
+
 		if ttl and str(ttl).isdigit():
 			ttl = int(ttl)
 		else:

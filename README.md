@@ -33,13 +33,13 @@ Sample code
 
 			class MainHandler(webapp.RequestHandler):
 				def get(self):
-					url = "http://loripsum.net/api/9000/short/headers"; #1.5MB aprox request html		
+					url = "http://loripsum.net/api/9000/short/headers"; #1.5MB aprox request html, gae_cache.cache will split it in 2 blocks
 					c = cache.get("content") 
 					
 					if c is None:
 						try:
 							c = urlfetch.fetch(url, deadline=60).content
-							cache.set("content", c)
+							cache.set("content", c, 15) #ttl = 15 seconds
 							c = "from live <br /><br /><br />" + c
 						except:
 							c = "Unexpected error"		

@@ -203,6 +203,8 @@ class cache:
 		if data is None:
 			return
 
+		cls.remove(key)
+
 		data = str(data);
 
 		if ttl and str(ttl).isdigit():
@@ -225,20 +227,17 @@ class cache:
 			while cont < blocks:
 				bls[key+"_"+str(cont)] = (ba[cont*cls.__memcache_block:((cont+1)*(cls.__memcache_block))-1]).tostring()
 				if backup:
-					cls.__deleteBlob(key+"_"+str(cont))
 					cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],str(ttl))
 				cont=cont+1
 			
 			if res>0:
 				bls[key+"_"+str(cont)]=(ba[cont*cls.__memcache_block-1:(cont*cls.__memcache_block)+res+1]).tostring()
 				if backup:
-					cls.__deleteBlob(key+"_"+str(cont))
 					cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],ttl)
 			
 			memcache.delete_multi(bls)
 			memcache.add_multi(bls, time=ttl)
 		else:
-			cls.remove(key)
 			memcache.add(key, data, time=ttl)
 			if backup:
 				cls.__saveBlob(key, data, ttl*1)

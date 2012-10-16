@@ -13,7 +13,7 @@ class MainHandler(webapp.RequestHandler):
 
 			try:
 				c = urlfetch.fetch(url, deadline=60).content
-				cache.set("content", c, 5)
+				cache.set("content", c, 15) #ttl = 15 seconds
 				c = "from live <br /><br /><br />" + c
 			except:
 				c = "Unexpected error"		

@@ -36,16 +36,16 @@ class cache:
 
 	@classmethod
 	def __saveBlob(cls, key, data, expire=0):
-		try:
-			cls.__deleteBlob(key)
-			file_name = files.blobstore.create(mime_type='text/plain',_blobinfo_uploaded_filename=key)
-			with files.open(file_name, 'a') as f:
-				f.write(str(expire)+"\n\r")
-				f.write(str(int(round(time.time() * 1000))) + "\n\r")
-				f.write(data)
-			files.finalize(file_name)	
-		except Exception,e:
-			pass
+		#try:
+		cls.__deleteBlob(key)
+		file_name = files.blobstore.create(mime_type='text/plain',_blobinfo_uploaded_filename=key)
+		with files.open(file_name, 'a') as f:
+			f.write(str(expire)+"\n\r")
+			f.write(str(int(round(time.time() * 1000))) + "\n\r")
+			f.write(data)
+		files.finalize(file_name)	
+		#except Exception,e:
+		#	pass
 
 	@classmethod
 	def __checkIfExpired(cls, value):
@@ -169,11 +169,11 @@ class cache:
 		if data is None:
 			return
 
-		if ttl and ttl.isdigit():
+		if ttl and str(ttl).isdigit():
 			ttl = int(ttl)
 		else:
 			ttl = 0	
-			
+
 		if not maxsize is None:
 			cls.__memcache_block = maxsize
 

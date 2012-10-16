@@ -17,6 +17,10 @@ class cache:
 
 	@classmethod
 	def __getBlobkey(cls, key):
+		""" Private method to get the key of a blobstore file
+			param @key is String
+			return key as String
+		"""
 		r = blobstore.BlobInfo.all()
 		_key = None
 		for a in r:	
@@ -28,6 +32,9 @@ class cache:
 
 	@classmethod
 	def __deleteBlob(cls,key):
+		""" Private method to delete a blobstore file from key
+			param @key is String
+		"""
 		r = blobstore.BlobInfo.all()
 		for a in r:	
 			if a.filename==key:
@@ -36,6 +43,11 @@ class cache:
 
 	@classmethod
 	def __saveBlob(cls, key, data, expire=0):
+		""" Private method to save a key and data value in a blobstore file
+			param @key is String
+			param @data is String
+			param @expire is Integer and Optional
+		"""
 		#try:
 		cls.__deleteBlob(key)
 		file_name = files.blobstore.create(mime_type='text/plain',_blobinfo_uploaded_filename=key)
@@ -49,7 +61,10 @@ class cache:
 
 	@classmethod
 	def __checkIfExpired(cls, value):
-
+		""" Private method that checks if content from blobstore is expired (checks its ttl and timestamp)
+			param @value is String. It contains all the information separated by \n\r
+			return tuple (value, tll)
+		"""
 		ttl = value[0:value.find("\n\r")]
 		if ttl and ttl.isdigit():
 			ttl = int(ttl)
@@ -75,6 +90,10 @@ class cache:
 			
 	@classmethod
 	def __getBlob(cls, _key):
+		""" Private method that gets blob content
+			param @key is String
+			return tuple (value, tll)
+		"""
 		if not _key is None:
 
 			_clau = cls.__getBlobkey(_key)
@@ -104,10 +123,11 @@ class cache:
 			return (None,None)		
 			
 	@classmethod
-	def get(cls, key, maxsize=None):
-		if not maxsize is None:
-			cls.__memcache_block = maxsize
-	
+	def get(cls, key):
+		""" Public method that gets a key from memcache or blobstore
+			param @key is String
+			return String
+		"""		
 		if memcache.get(key):
 			return memcache.get(key)
 		else:
@@ -132,12 +152,15 @@ class cache:
 					if not mk is None:
 						memcache.add(key+"_"+str(z), mk,time=ttl)
 					else: #item is expired
-						if z==0:
+						if z==1:
 							s = None
 							break;	
+
 			if z>0:
 				if not s is None:
 					s = "".join(s)
+				else:
+					cls.remove(key);
 				
 				return s
 			else:
@@ -148,10 +171,14 @@ class cache:
 					memcache.add(key, content,time=ttl)
 					return content
 				else:
+					cls.remove(key);
 					return None
 
 	@classmethod
 	def remove(cls, key):
+		""" Public method that removes content from memcache and blobstore
+			param @key is String
+		"""		
 		if memcache.get(key):
 			memcache.delete(key)
 			cls.__deleteBlob(key)
@@ -166,6 +193,13 @@ class cache:
 
 	@classmethod
 	def set(cls, key, data, ttl=0, backup=True, maxsize=None):
+		""" Public method that sets data into memcache and blobstore
+			param @key is String
+			param @data is String
+			param @ttl is Integer (seconds)
+			param @backup is Boolean 
+			param @maxsize is Integer
+		"""		
 		if data is None:
 			return
 

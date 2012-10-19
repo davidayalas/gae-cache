@@ -192,12 +192,11 @@ class cache:
 				
 
 	@classmethod
-	def set(cls, key, data, ttl=0, backup=True, maxsize=None):
+	def set(cls, key, data, ttl=0, maxsize=None):
 		""" Public method that sets data into memcache and blobstore
 			param @key is String
 			param @data is String
 			param @ttl is Integer (seconds)
-			param @backup is Boolean 
 			param @maxsize is Integer
 		"""		
 		if data is None:
@@ -226,18 +225,15 @@ class cache:
 			cont = 0
 			while cont < blocks:
 				bls[key+"_"+str(cont)] = (ba[cont*cls.__memcache_block:((cont+1)*(cls.__memcache_block))-1]).tostring()
-				if backup:
-					cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],str(ttl))
+				cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],str(ttl))
 				cont=cont+1
 			
 			if res>0:
 				bls[key+"_"+str(cont)]=(ba[cont*cls.__memcache_block-1:(cont*cls.__memcache_block)+res+1]).tostring()
-				if backup:
-					cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],ttl)
+				cls.__saveBlob(key+"_"+str(cont),bls[key+"_"+str(cont)],ttl)
 			
 			memcache.delete_multi(bls)
 			memcache.add_multi(bls, time=ttl)
 		else:
 			memcache.add(key, data, time=ttl)
-			if backup:
-				cls.__saveBlob(key, data, ttl*1)
+			cls.__saveBlob(key, data, ttl*1)

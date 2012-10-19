@@ -9,13 +9,11 @@ How to use
 		from lib.gae_cache import cache
 
 
-* cache.**set**(key, value[, ttl=0][, backup=True][, maxsize=1000000])<br />  
+* cache.**set**(key, value[, ttl=0][, maxsize=1000000])<br />  
 
 	- ttl: in seconds, default cache ttl is 0, unlimited<br />  
 
 	- maxsize: GAE has a limit for each cache entry. Default is 1000000 of bytes. You can setup other size: gae_cache splits content in blocks of 1000000 of bytes and set cache keys with "_N" (key_1,key_2, ..., key_N)<br />  
-
-	- backup: store content in blob store. Default is true<br />   
 
 * cache.**get**(key)<br /><br />  
 

@@ -1,7 +1,7 @@
 Google App Engine Cache with real persistence
 ==============================================
 
-With this simple cache you can truly persist in GAE cache items: in memcache and in blobstore. Memcache is volatile, so, with persistence in blobstore you can guarantee items are available always.
+With this simple cache you can truly persist in GAE cache items: in memcache and in cloud storage. Memcache is volatile, so, with persistence in cloudstorage you can guarantee items are available always.
 
 How to use
 -----------
@@ -19,6 +19,11 @@ How to use
 
 * cache.**remove**(key)<br /><br />  
 
+
+Requirements
+-------------
+
+This new version requires to activate the cloud storage default bucket in your application: https://cloud.google.com/appengine/docs/python/googlecloudstorageclient/activate 
 
 Sample code
 ------------

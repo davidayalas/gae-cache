@@ -6,7 +6,6 @@ from google.appengine.api import memcache
 import cloudstorage as gcs
 from google.appengine.api import app_identity
 import os
-import logging
 
 from array import array
 import time
@@ -55,14 +54,12 @@ class cache:
         """
 
         cls.__deleteBlob(key)
-        #file_name = files.blobstore.create(mime_type='text/plain',_blobinfo_uploaded_filename=key)
 
         with gcs.open(cls.__bucket_name + key, 'w', content_type='text/plain', options={'x-goog-meta-uploaded-filename': key}) as f:
             f.write(str(expire)+"\n\r")
             f.write(str(int(round(time.time() * 1000))) + "\n\r")
             f.write(data)
             f.close()
-        #files.finalize(file_name)    
 
     @classmethod
     def __checkIfExpired(cls, value):
@@ -140,7 +137,6 @@ class cache:
         if memcache.get(key):
             return memcache.get(key)
         else:
-            #s=bytearray()
             s=[]
             z=0
             
@@ -152,7 +148,6 @@ class cache:
                     memcache.add(key+"_"+str(z), mk,time=ttl)
 
             while mk:
-                #s[z*cls.memcache_block:((z+1)*(cls.memcache_block))] = mk
                 s.append(mk)
                 z=z+1
                 mk = memcache.get(key+"_"+str(z))
@@ -193,14 +188,12 @@ class cache:
             memcache.delete(key)
             cls.__deleteBlob(key)
         else:
-            #r = blobstore.BlobInfo.all()
             r = gcs.listbucket(cls.__bucket_name)
 
             _key = None
             for a in r:    
                 if a.filename[len(cls.__bucket_name):].find(key+"_")==0:            
                     memcache.delete(a.filename[len(cls.__bucket_name):])
-                    #blobstore.delete(a.key())
                     gcs.delete(a.filename)
                 
 
@@ -228,7 +221,6 @@ class cache:
         if not maxsize is None:
             cls.__memcache_block = maxsize
 
-        #ba = bytearray(data)
         ba = array("B",data)
         ln = len(ba)
 

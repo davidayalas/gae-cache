@@ -52,3 +52,8 @@ Sample code
 					self.response.out.write(c[0:3000] + "[...]")
 
 			app = webapp2.WSGIApplication([('/', MainHandler)],debug=True)
+
+Sample app
+-----------
+
+Sample app is running here: http://gae-cache-testing.appspot.com/

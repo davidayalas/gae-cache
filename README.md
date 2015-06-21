@@ -20,10 +20,12 @@ How to use
 * cache.**remove**(key)<br /><br />  
 
 
-Requirements
--------------
+Requirements and dependencies
+------------------------------
 
-This new version requires to activate the cloud storage default bucket in your application: https://cloud.google.com/appengine/docs/python/googlecloudstorageclient/activate 
+This new version requires to activate the cloud storage default bucket in your application: https://cloud.google.com/appengine/docs/python/googlecloudstorageclient/activate
+
+You have to put the client library in you applicacion/lib directory: https://cloud.google.com/appengine/docs/python/googlecloudstorageclient/download
 
 Sample code
 ------------
